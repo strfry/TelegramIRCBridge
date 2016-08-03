@@ -1,0 +1,20 @@
+
+==== DAY 0
+
+Stickers!
+Telegram Actions transported as nil
+IRC /me actions look weird but are functional
+TG users without nickname displayed as nil (some as nothing??)
+Encrypted/SSL access to IRC server
+
+Print User name in Bold Script (Telegram)
+
+Very long messages are cut off by IRC
+
+
+
+==== DAY 1
+
+* Moving to Telegram Channel instead of group -> Better 1:1 Mapping with IRC
+* Send to Telegram broken
+* Username display broken
