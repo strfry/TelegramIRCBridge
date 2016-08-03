@@ -1,8 +1,18 @@
-tg_channel = "PUBLIC"
+DEBUG = 1
+
+--tg_channel = "PUBLIC"
+tg_group = "CCCMZWI_NON-OFFICIAL_IRC-Bridge"
+tg_group = "$02000000de61b80a0000000000000000"
+
+tg_match = "CCCMZ"
 
 irc_nick = "tgboT"
-irc_channel = "#zwischendeckenplanung"
+irc_channel = "#cccmz"
 irc_server = "irc.hackint.org"
+
+----------------------- GLOBALS
+
+tg_last_msg = nil
 
 ----------------------- LuaIRC
 
@@ -36,19 +46,24 @@ function irc_forward_msg(from, text)
   irc_conn:sendChat(irc_channel, line)
 end
 
+----------------------- Telegram
+
+function tg_forward_msg(from, text, to)
+  line = ("[%s] %s"):format(from, text)
+  --print (line)
+--  if not post_msg(tg_channel, line, ok_cb, false) then
+  if not send_msg(tg_group, line, ok_cb, false) then
+
+    print("Something went wrong in send_msg to", to)
+    print("Text: ", text)
+    print("From: ", from)
+    vardump(tg_last_msg)
+  end
+end
+
 function tg_test_msg(context)
   result = send_msg(tg_channel, context, ok_cb, false)
   print ("tg_test_msg " .. context .. " = " .. tostring(result))
-end
-
------------------------ Telegram
-
-function tg_forward_msg(from, text)
-  line = ("[%s] %s"):format(from, text)
-  --print (line)
-  if not send_msg(tg_channel, line, ok_cb, false) then
-    print("Something went wrong in send_msg")
-  end
 end
 
 -------------------------------- Telegram Sample code
@@ -112,14 +127,19 @@ function on_msg_receive (msg)
     return
   end
 
+  tg_last_msg = msg
+
+  if DEBUG then
+    vardump(msg)
+  end
  
-  peer_type = "channel"
-  if (msg.to.title:match(tg_channel) and msg.to.peer_type == peer_type) then
-    irc_forward_msg(msg.from.username, msg.text)
+  -- msg.to.peer_type == "chat"
+  if (msg.to.title:match(tg_match)) then
+    irc_forward_msg(msg.from.username, msg.text, tg_group)
   else
     vardump(msg.to)
     print (string.format("Ignoring Message to channel %s", msg.to.title))
-    print("msg.to.title:match(tg_channel)", msg.to.title:match(tg_channel))
+    print("msg.to.title:match(tg_group)", msg.to.title:match(tg_group))
     print("msg.to.peer_type == peer_type", msg.to.peer_type == peer_type)
   end
 
