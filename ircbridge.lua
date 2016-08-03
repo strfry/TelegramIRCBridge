@@ -1,7 +1,7 @@
-tg_channel = "CCCMZ"
+tg_channel = "PUBLIC"
 
 irc_nick = "tgboT"
-irc_channel = "#cccmz"
+irc_channel = "#zwischendeckenplanung"
 irc_server = "irc.hackint.org"
 
 ----------------------- LuaIRC
@@ -112,10 +112,15 @@ function on_msg_receive (msg)
     return
   end
 
-  if (msg.to.title:match(tg_channel) and msg.to.peer_type == "chat") then
+ 
+  peer_type = "channel"
+  if (msg.to.title:match(tg_channel) and msg.to.peer_type == peer_type) then
     irc_forward_msg(msg.from.username, msg.text)
   else
-    print (string.format("Ignoring Message to channel %s", msg.to.name))
+    vardump(msg.to)
+    print (string.format("Ignoring Message to channel %s", msg.to.title))
+    print("msg.to.title:match(tg_channel)", msg.to.title:match(tg_channel))
+    print("msg.to.peer_type == peer_type", msg.to.peer_type == peer_type)
   end
 
   --tg_test_msg('pong')  
